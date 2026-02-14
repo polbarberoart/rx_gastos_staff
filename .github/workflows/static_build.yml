@@ -1,0 +1,49 @@
+name: Static Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    if: github.repository == 'polbarberoart/rx_gastos_staff' 
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Reflex Export
+        run: |
+          python -m reflex init
+          python -m reflex export --frontend-only
+
+      - name: Prepare Public Folder
+        run: |
+          rm -rf public
+          unzip frontend.zip -d public
+          rm frontend.zip
+
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated Build: Update public folder"
+          commit_user_name: "polbarberoart"
+          commit_user_email: "pol@polbarbero.art"
+          # Usamos '.' para que detecte cualquier cambio en el repo, 
+          # especialmente dentro de public/
+          file_pattern: '.'
