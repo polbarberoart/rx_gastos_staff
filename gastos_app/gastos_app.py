@@ -1,8 +1,11 @@
 """Welcome to Reflex! This file outlines the steps to create a basic app."""
 
 import reflex as rx
-
 from rxconfig import config
+# Importamos los modelos para que Reflex cree las tablas
+from .models.staff import Staff
+from .models.category import Category
+from .models.expense import Expense
 
 
 class State(rx.State):
