@@ -1,33 +1,22 @@
-"""Welcome to Reflex! This file outlines the steps to create a basic app."""
+"""Gastos Staff - Sistema de registro de gastos."""
 
 import reflex as rx
 from rxconfig import config
-# Importamos los modelos para que Reflex cree las tablas
-from .models.staff import Staff
-from .models.category import Category
-from .models.expense import Expense
 
+# Importamos los modelos para que Reflex registre las tablas en la DB
+from .models import Staff, Category, Expense
 
-class State(rx.State):
-    pass
+# Importamos estado y vistas
+from .states import ExpenseState
+from .views import expense_table
 
 
 def index() -> rx.Component:
-    # Welcome Page (Index)
     return rx.container(
         rx.color_mode.button(position="top-right"),
         rx.vstack(
-            rx.heading("Welcome WILLY, ets el millor!", size="9"),
-            rx.text(
-                "Get started by editing ",
-                rx.code(f"{config.app_name}/{config.app_name}.py"),
-                size="5",
-            ),
-            rx.link(
-                rx.button("Check out our docs!"),
-                href="https://reflex.dev/docs/getting-started/introduction/",
-                is_external=True,
-            ),
+            rx.heading("Gastos Staff", size="9"),
+            expense_table(),
             spacing="5",
             justify="center",
             min_height="85vh",
@@ -36,4 +25,4 @@ def index() -> rx.Component:
 
 
 app = rx.App()
-app.add_page(index)
+app.add_page(index, on_load=ExpenseState.get_all_expenses)
